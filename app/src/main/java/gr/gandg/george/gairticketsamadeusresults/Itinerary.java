@@ -18,4 +18,40 @@ public class Itinerary {
     public boolean refundable;
     public boolean changePenalties;
 
+    @Override
+    public String toString() {
+        StringBuffer txt = new StringBuffer("");
+        Itinerary it = this;
+        txt.append("Αναχώφηση: \n");
+        for (int j=0; j<it.outbound.size(); j++) {
+            Flight f = it.outbound.get(j);
+            txt.append(f.departsAt);
+            txt.append(" ");
+            txt.append(f.originAirport);
+            txt.append("->");
+            txt.append(f.arrivesAt);
+            txt.append(" ");
+            txt.append(f.destinationAirport);
+            txt.append(f.marketingAirline + "\n");
+        }
+        txt.append("Επιστροφή: \n");
+        for (int j=0; j<it.inbound.size(); j++) {
+            Flight f = it.inbound.get(j);
+            txt.append(f.departsAt);
+            txt.append(" ");
+            txt.append(f.originAirport);
+            txt.append("->");
+            txt.append(f.arrivesAt);
+            txt.append(" ");
+            txt.append(f.destinationAirport);
+            txt.append(" ");
+            txt.append(f.marketingAirline + "\n");
+
+        }
+        txt.append("Τιμή: ");
+        txt.append(it.totalPrice);
+        txt.append("\n");
+
+        return txt.toString();
+    }
 }

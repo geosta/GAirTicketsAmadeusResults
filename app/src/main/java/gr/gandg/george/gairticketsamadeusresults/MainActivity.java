@@ -3,9 +3,9 @@ package gr.gandg.george.gairticketsamadeusresults;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.widget.TextView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,21 +18,27 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     String amadeusKey;
 
-    private TextView textView;
+    private ListView resultsListView;
+    ArrayAdapter<String> mItineraryAdapter;
+    ArrayList<String> itineraryResults = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        textView = (TextView)findViewById(R.id.textView);
-        textView.setMovementMethod(new ScrollingMovementMethod());
         amadeusKey = BuildConfig.AMADEUS_API_KEY;
+
+        resultsListView = (ListView)findViewById(R.id.resultsListView);
+
+        mItineraryAdapter = new ArrayAdapter<String>(this,
+                R.layout.itinerary_list_item, R.id.itinerary_listView, itineraryResults);
+        resultsListView.setAdapter(mItineraryAdapter);
 
         (new FlightsParser()).execute();
     }
@@ -45,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected ArrayList<Itinerary> doInBackground(String... params) {
-
-
 
             String origin = "ATH";
             String destination = "LON";
@@ -175,10 +179,10 @@ public class MainActivity extends AppCompatActivity {
 // --- inbound
 
                     JSONObject amadeusInbound = amadeusItineraries.getJSONObject(0).getJSONObject("inbound");
-                    JSONArray amadeusIboundFlightes = amadeusOutbound.getJSONArray("flights");
+                    JSONArray amadeusIboundFlights = amadeusOutbound.getJSONArray("flights");
 
                     // inbound flights
-                    for (int j=0; j<amadeusIboundFlightes.length(); j++) {
+                    for (int j=0; j<amadeusIboundFlights.length(); j++) {
                         JSONObject amadeusFlight = amadeusOutboundFlights.getJSONObject(j);
                         Flight flight = new Flight();
                         flight.departsAt = amadeusFlight.getString("departs_at");
@@ -212,48 +216,15 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(ArrayList<Itinerary> result) {
-            textView.setText("Completed...");
-            StringBuffer txt = new StringBuffer("");
-            for (int i = 0; i < result.size(); i++) {
-                Itinerary it = result.get(i);
-                txt.append("====Result " + i + " ======\n");
-                txt.append("---Outbound---\n");
-                for (int j=0; j<it.outbound.size(); j++) {
-                    Flight f = it.outbound.get(j);
-                    txt.append(f.departsAt +"\n");
-                    txt.append(f.arrivesAt + "\n");
-                    txt.append(f.originAirport + "\n");
-                    txt.append(f.destinationAirport + "\n");
-                    txt.append(f.marketingAirline + "\n");
-                    txt.append(f.operatingAirline + "\n");
-                    txt.append(f.flightNumber + "\n");
-                    txt.append(f.aircraft + "\n");
-                    txt.append(f.travelClass + "\n");
-                    txt.append(f.bookingCode + "\n");
-                    txt.append(f.seatsRemaining + "\n");
-                }
-                txt.append("---Inbound---\n");
-                for (int j=0; j<it.inbound.size(); j++) {
-                    Flight f = it.inbound.get(j);
-                    txt.append(f.departsAt +"\n");
-                    txt.append(f.arrivesAt + "\n");
-                    txt.append(f.originAirport + "\n");
-                    txt.append(f.destinationAirport + "\n");
-                    txt.append(f.marketingAirline + "\n");
-                    txt.append(f.operatingAirline + "\n");
-                    txt.append(f.flightNumber + "\n");
-                    txt.append(f.aircraft + "\n");
-                    txt.append(f.travelClass + "\n");
-                    txt.append(f.bookingCode + "\n");
-                    txt.append(f.seatsRemaining + "\n");
-                }
-                txt.append("---Fare---\n");
-                txt.append(it.totalPrice + "\n");
-                txt.append(it.refundable + "\n");
-                txt.append(it.changePenalties + "\n");
-            }
 
-            textView.setText(txt.toString());
+            itineraryResults.clear();
+            if (result != null) {
+                for (int i = 0; i < result.size(); i++) {
+                    Itinerary it = result.get(i);
+                    itineraryResults.add(it.toString());
+                }
+                mItineraryAdapter.notifyDataSetChanged();
+            }
         }
     }
 }

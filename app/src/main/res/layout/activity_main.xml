@@ -10,11 +10,11 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="gr.gandg.george.gairticketsamadeusresults.MainActivity">
 
-    <TextView
+
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello World!"
-        android:id="@+id/textView"
-        android:scrollbars="vertical"
-        android:maxLength="10000"/>
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/resultsListView" />
 </RelativeLayout>
