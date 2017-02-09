@@ -3,6 +3,7 @@ package gr.gandg.george.gairticketsamadeusresults;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         textView = (TextView)findViewById(R.id.textView);
+        textView.setMovementMethod(new ScrollingMovementMethod());
         amadeusKey = BuildConfig.AMADEUS_API_KEY;
 
         (new FlightsParser()).execute();
@@ -46,10 +48,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-            String origin = "SKG";
+            String origin = "ATH";
             String destination = "LON";
-            String departure_date = "2017-04-01";
-            String return_date = "2017-04-05";
+            String departure_date = "2017-03-01";
+            String return_date = "2017-03-05";
             int adults = 2, children = 1, infants =1;
 
             StringBuffer sUrl = new StringBuffer("");
@@ -69,10 +71,10 @@ public class MainActivity extends AppCompatActivity {
             sUrl.append(children);
             sUrl.append("&infants=");
             sUrl.append(infants);
-            sUrl.append("&nonstop=true");
+            sUrl.append("&nonstop=false");
             sUrl.append("&max_price=5000");
             sUrl.append("&currency=EUR");
-            sUrl.append("&number_of_results=2");
+            sUrl.append("&number_of_results=10");
 
             String theUrl = sUrl.toString();
 
