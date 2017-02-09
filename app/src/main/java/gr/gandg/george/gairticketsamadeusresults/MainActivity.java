@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
 
             String origin = "SKG";
             String destination = "LON";
-            String departure_date = "2017-03-01";
-            String return_date = "2017-03-05";
+            String departure_date = "2017-04-01";
+            String return_date = "2017-04-05";
             int adults = 2, children = 1, infants =1;
 
             StringBuffer sUrl = new StringBuffer("");
@@ -63,16 +63,16 @@ public class MainActivity extends AppCompatActivity {
             sUrl.append(departure_date);
             sUrl.append("&return_date=");
             sUrl.append(return_date);
-            sUrl.append("&adults");
+            sUrl.append("&adults=");
             sUrl.append(adults);
-            sUrl.append("children");
+            sUrl.append("&children=");
             sUrl.append(children);
-            sUrl.append("infants");
+            sUrl.append("&infants=");
             sUrl.append(infants);
             sUrl.append("&nonstop=true");
             sUrl.append("&max_price=5000");
-            sUrl.append("currency=EUR");
-            sUrl.append("number_of_results=2");
+            sUrl.append("&currency=EUR");
+            sUrl.append("&number_of_results=2");
 
             String theUrl = sUrl.toString();
 
@@ -156,11 +156,11 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject amadeusFlight = amadeusOutboundFlights.getJSONObject(j);
                         Flight flight = new Flight();
                         flight.departsAt = amadeusFlight.getString("departs_at");
-                        flight.arivesAt = amadeusFlight.getString("arives_at");
+                        flight.arrivesAt = amadeusFlight.getString("arrives_at");
                         flight.originAirport = amadeusFlight.getJSONObject("origin").getString("airport");
                         flight.destinationAirport = amadeusFlight.getJSONObject("destination").getString("airport");
-                        flight.marketingAirline = amadeusFlight.getString("marketring_airline");
-                        flight.operatingAirline = amadeusFlight.getString("operationg_airline");
+                        flight.marketingAirline = amadeusFlight.getString("marketing_airline");
+                        flight.operatingAirline = amadeusFlight.getString("operating_airline");
                         flight.flightNumber = amadeusFlight.getString("flight_number");
                         flight.aircraft = amadeusFlight.getString("aircraft");
                         flight.travelClass = amadeusFlight.getJSONObject("booking_info").getString("travel_class");
@@ -180,11 +180,11 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject amadeusFlight = amadeusOutboundFlights.getJSONObject(j);
                         Flight flight = new Flight();
                         flight.departsAt = amadeusFlight.getString("departs_at");
-                        flight.arivesAt = amadeusFlight.getString("arives_at");
+                        flight.arrivesAt = amadeusFlight.getString("arrives_at");
                         flight.originAirport = amadeusFlight.getJSONObject("origin").getString("airport");
                         flight.destinationAirport = amadeusFlight.getJSONObject("destination").getString("airport");
-                        flight.marketingAirline = amadeusFlight.getString("marketring_airline");
-                        flight.operatingAirline = amadeusFlight.getString("operationg_airline");
+                        flight.marketingAirline = amadeusFlight.getString("marketing_airline");
+                        flight.operatingAirline = amadeusFlight.getString("operating_airline");
                         flight.flightNumber = amadeusFlight.getString("flight_number");
                         flight.aircraft = amadeusFlight.getString("aircraft");
                         flight.travelClass = amadeusFlight.getJSONObject("booking_info").getString("travel_class");
@@ -195,8 +195,8 @@ public class MainActivity extends AppCompatActivity {
 
                     JSONObject amadeusFare = amadeusResult.getJSONObject("fare");
                     itinerary.totalPrice = amadeusFare.getDouble("total_price");
-                    itinerary.refundable = amadeusFare.getBoolean("refundable");
-                    itinerary.changePenalties = amadeusFare.getBoolean("change_penalties");
+                    itinerary.refundable = amadeusFare.getJSONObject("restrictions").getBoolean("refundable");
+                    itinerary.changePenalties = amadeusFare.getJSONObject("restrictions").getBoolean("change_penalties");
 
                     results.add(itinerary);
                 }
@@ -211,6 +211,47 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<Itinerary> result) {
             textView.setText("Completed...");
+            StringBuffer txt = new StringBuffer("");
+            for (int i = 0; i < result.size(); i++) {
+                Itinerary it = result.get(i);
+                txt.append("====Result " + i + " ======\n");
+                txt.append("---Outbound---\n");
+                for (int j=0; j<it.outbound.size(); j++) {
+                    Flight f = it.outbound.get(j);
+                    txt.append(f.departsAt +"\n");
+                    txt.append(f.arrivesAt + "\n");
+                    txt.append(f.originAirport + "\n");
+                    txt.append(f.destinationAirport + "\n");
+                    txt.append(f.marketingAirline + "\n");
+                    txt.append(f.operatingAirline + "\n");
+                    txt.append(f.flightNumber + "\n");
+                    txt.append(f.aircraft + "\n");
+                    txt.append(f.travelClass + "\n");
+                    txt.append(f.bookingCode + "\n");
+                    txt.append(f.seatsRemaining + "\n");
+                }
+                txt.append("---Inbound---\n");
+                for (int j=0; j<it.inbound.size(); j++) {
+                    Flight f = it.inbound.get(j);
+                    txt.append(f.departsAt +"\n");
+                    txt.append(f.arrivesAt + "\n");
+                    txt.append(f.originAirport + "\n");
+                    txt.append(f.destinationAirport + "\n");
+                    txt.append(f.marketingAirline + "\n");
+                    txt.append(f.operatingAirline + "\n");
+                    txt.append(f.flightNumber + "\n");
+                    txt.append(f.aircraft + "\n");
+                    txt.append(f.travelClass + "\n");
+                    txt.append(f.bookingCode + "\n");
+                    txt.append(f.seatsRemaining + "\n");
+                }
+                txt.append("---Fare---\n");
+                txt.append(it.totalPrice + "\n");
+                txt.append(it.refundable + "\n");
+                txt.append(it.changePenalties + "\n");
+            }
+
+            textView.setText(txt.toString());
         }
     }
 }

@@ -6,7 +6,7 @@ package gr.gandg.george.gairticketsamadeusresults;
 
 public class Flight {
     public String departsAt;
-    public String arivesAt;
+    public String arrivesAt;
     public String originAirport;
     public String destinationAirport;
     public String marketingAirline;
